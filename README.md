@@ -38,7 +38,13 @@ doSomething();
 exports.default = _x2.default + _y2.default;
 ```
 
-Other features (like ``import x as y from 'X'`` or ``import * from 'X'`` etc) aren't supported. Just ``import VARIABLE from 'PATH'`` and ``import 'PATH'``.
+Supported features:
+- ``import SPECIFIER from 'PATH'``
+- ``import 'PATH'``
+- ``import {SPECIFIER1, SPECIFIER2 as SPECIFIER3} from 'PATH'``
+- ``export default NODE``
+
+Other features aren't supported.
 
 
 ## Installation

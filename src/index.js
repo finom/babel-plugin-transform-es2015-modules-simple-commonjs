@@ -29,27 +29,46 @@ module.exports = function({
 					for (let path of body) {
 						if (path.isExportDefaultDeclaration()) {
 							let declaration = path.get("declaration");
-							path.replaceWith(buildExportsAssignment(declaration.node));
+							if(declaration.type == 'FunctionDeclaration' && declaration.node.id) {
+								path.replaceWithMultiple ([
+									buildExportsAssignment(declaration.node.id),
+									declaration.node
+								]);
+							} else {
+								path.replaceWith(buildExportsAssignment(declaration.node));
+							}
 						}
 
 						if (path.isImportDeclaration()) {
 							let specifiers = path.node.specifiers;
-
 							if (specifiers.length == 0) {
 								anonymousSources.push(buildRequire(path.node.source));
-							} else if (specifiers.length == 1) {
+							} else if (specifiers.length == 1 && specifiers[0].type == 'ImportDefaultSpecifier') {
 								sources.push(t.variableDeclaration("var", [
 									t.variableDeclarator(t.identifier(specifiers[0].local.name), buildRequire(
 										path.node.source
 									).expression)
 								]));
 							} else {
-								throw Error(`Not allowed to use more than one import specifiers`);
+								let importedID = path.scope.generateUidIdentifier(path.node.source.value);
+
+								sources.push(t.variableDeclaration("var", [
+									t.variableDeclarator(importedID, buildRequire(
+										path.node.source
+									).expression)
+								]));
+
+								specifiers.forEach(({imported, local}) => {
+									sources.push(t.variableDeclaration("var", [
+										t.variableDeclarator(t.identifier(local.name), t.identifier(importedID.name + '.' + imported.name))
+									]));
+								});
 							}
 
 							path.remove();
 						}
 					}
+
 
 					path.node.body = buildModule({
 						IMPORTS: sources.concat(anonymousSources),
