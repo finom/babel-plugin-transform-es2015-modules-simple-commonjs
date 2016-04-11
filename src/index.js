@@ -29,11 +29,15 @@ module.exports = function({
 					for (let path of body) {
 						if (path.isExportDefaultDeclaration()) {
 							let declaration = path.get("declaration");
-							if(declaration.type == 'FunctionDeclaration' && declaration.node.id) {
-								path.replaceWithMultiple ([
-									buildExportsAssignment(declaration.node.id),
-									declaration.node
-								]);
+							if(declaration.type == 'FunctionDeclaration') {
+								if(declaration.node.id) {
+									path.replaceWithMultiple ([
+										buildExportsAssignment(declaration.node.id),
+										declaration.node
+									]);
+								} else {
+									path.replaceWith(buildExportsAssignment(t.toExpression(declaration.node)));
+								}
 							} else {
 								path.replaceWith(buildExportsAssignment(declaration.node));
 							}

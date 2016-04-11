@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-es2015-modules-simple-commonjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simplified imports and exports",
   "repository": "finom/babel-plugin-transform-es2015-modules-simple-commonjs",
   "license": "MIT",
