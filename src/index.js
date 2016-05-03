@@ -14,17 +14,28 @@ let buildExportsAssignment = template(`
  	module.exports = $0;
 `);
 
+let buildNamedExportsAssignment = template(`
+	exports.$0 = $1;
+`);
+
 
 module.exports = function({
 	types: t
 }) {
 	return {
+		inherits: require("babel-plugin-transform-strict-mode"),
 		visitor: {
 			Program: {
 				exit(path, file) {
 					let body = path.get("body"),
 						sources = [],
-						anonymousSources = [];
+						anonymousSources = [],
+						{ scope } = path;
+
+					// rename these commonjs variables if they're declared in the file
+					scope.rename("module");
+					scope.rename("exports");
+					scope.rename("require");
 
 					for (let path of body) {
 						if (path.isExportDefaultDeclaration()) {
@@ -42,6 +53,8 @@ module.exports = function({
 								path.replaceWith(buildExportsAssignment(declaration.node));
 							}
 						}
+
+
 
 						if (path.isImportDeclaration()) {
 							let specifiers = path.node.specifiers;
