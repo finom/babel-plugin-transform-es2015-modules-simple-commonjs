@@ -41,9 +41,9 @@ function runTest(dir) {
 	.forEach(function (part) {
 		var value = part.value;
 		if (part.added) {
-			value = chalk.green(part.value);
+			value = chalk.green(part.value.replace(/\t/g, '»   '));
 		} else if (part.removed) {
-			value = chalk.red(part.value);
+			value = chalk.red(part.value.replace(/\t/g, '»   '));
 		}
 
 
