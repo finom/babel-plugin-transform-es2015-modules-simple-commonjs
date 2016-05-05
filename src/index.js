@@ -26,8 +26,7 @@ module.exports = function({
 		visitor: {
 			Program: {
 				exit(path, file) {
-					let body = path.get("body"),
-						sources = [],
+					let sources = [],
 						anonymousSources = [],
 						{ scope } = path,
 						hasDefaultExport = false,
@@ -38,6 +37,8 @@ module.exports = function({
 					scope.rename("module");
 					scope.rename("exports");
 					scope.rename("require");
+
+					let body = path.get("body");
 
 					for (let path of body) {
 						if (path.isExportDefaultDeclaration()) {
