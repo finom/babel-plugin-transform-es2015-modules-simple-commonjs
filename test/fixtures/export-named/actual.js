@@ -10,5 +10,8 @@ export class e {
 	}
 }
 var f = 1;
+var h = 1;
+var i = 1;
 export { f };
 export { f as g };
+export { h, i };

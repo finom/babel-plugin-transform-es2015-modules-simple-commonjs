@@ -31,5 +31,9 @@ var e = exports.e = function () {
 }();
 
 var f = 1;
+var h = 1;
+var i = 1;
 exports.f = f;
 exports.g = f;
+exports.h = h;
+exports.i = i;
