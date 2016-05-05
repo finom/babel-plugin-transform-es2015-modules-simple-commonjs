@@ -79,7 +79,7 @@ module.exports = function({
 								]));
 
 								specifiers.forEach(({imported, local}) => {
-									if (!imported) {
+									if (!imported || imported.name === 'default') {
 										sources.push(t.variableDeclaration("var", [
 											t.variableDeclarator(t.identifier(local.name), t.identifier(importedID.name))
 										]));
