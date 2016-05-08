@@ -1,13 +1,12 @@
 import 'better-log/install';
 import template from "babel-template";
 
-let buildModule = template(`
-	IMPORTS;
-	BODY;
-`);
-
 let buildRequire = template(`
  	require($0);
+`);
+
+let buildRequireDefault = template(`
+ 	require($0).default;
 `);
 
 let buildExportsAssignment = template(`
@@ -62,11 +61,13 @@ module.exports = function({
 
 						if (path.isImportDeclaration()) {
 							let specifiers = path.node.specifiers;
+							let is2015Compatible = path.node.source.value.match(/babel-runtime[\\\/]/);
 							if (specifiers.length == 0) {
 								anonymousSources.push(buildRequire(path.node.source));
 							} else if (specifiers.length == 1 && specifiers[0].type == 'ImportDefaultSpecifier') {
+								let template = is2015Compatible ? buildRequireDefault : buildRequire;
 								sources.push(t.variableDeclaration("var", [
-									t.variableDeclarator(t.identifier(specifiers[0].local.name), buildRequire(
+									t.variableDeclarator(t.identifier(specifiers[0].local.name), template (
 										path.node.source
 									).expression)
 								]));
@@ -80,7 +81,7 @@ module.exports = function({
 								]));
 
 								specifiers.forEach(({imported, local}) => {
-									if (!imported || imported.name === 'default') {
+									if (!imported || (!is2015Compatible && imported.name === 'default')) {
 										sources.push(t.variableDeclaration("var", [
 											t.variableDeclarator(t.identifier(local.name), t.identifier(importedID.name))
 										]));

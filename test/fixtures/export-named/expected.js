@@ -1,8 +1,8 @@
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/classCallCheck");
+var _classCallCheck = require("babel-runtime/helpers/classCallCheck").default;
 
-var _createClass = require("babel-runtime/helpers/createClass");
+var _createClass = require("babel-runtime/helpers/createClass").default;
 
 var a = exports.a = 1,
     aa = exports.aa = 2;
