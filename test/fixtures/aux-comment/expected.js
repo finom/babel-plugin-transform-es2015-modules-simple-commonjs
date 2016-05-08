@@ -20,9 +20,8 @@ require("foo-bar");
 
 require("./directory/foo-bar");
 
-exports.
 /* comment 1*/
-test = test;
+exports.test = test;
 var test = exports.test = 5;
 
 bar(foo, bar2);

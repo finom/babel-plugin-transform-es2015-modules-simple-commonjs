@@ -152,12 +152,7 @@ module.exports = function({
 						throw lastExportPath.buildCodeFrameError('The simple-commonjs plugin does not support both a export default and a export named in the same file. This is because the module.exports would override any export');
 					}
 
-					if (sources.length || anonymousSources.length) {
-						path.node.body = buildModule({
-							IMPORTS: sources.concat(anonymousSources),
-							BODY: path.node.body,
-						});
-					}
+					path.unshiftContainer("body", sources.concat(anonymousSources));
 				}
 			}
 		}
