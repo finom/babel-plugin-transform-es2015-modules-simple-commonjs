@@ -96,4 +96,4 @@ require('babel').transform('code', {
 
 ### Usage with other ES2015 plugins
 
-This replaces the functionality in `transform-es2015-mmodules-commonjs`, but you may be better off using this with the `babel-preset-es2015-webpack` preset, which takes the es2015 preset and removes the commonjs transform.
+This replaces the functionality in `transform-es2015-modules-commonjs`, but you may be better off using this with the `babel-preset-es2015-webpack` preset, which takes the es2015 preset and removes the commonjs transform.
