@@ -48,7 +48,7 @@ This supports all standard es2015 import and export code with some caveats.
 
 3. If you mix default imports and importing `*`, it will work, but will not be valid in ES2015. E.g. with the following...
 
-```
+```js
 // file a
 export default 1;
 
@@ -88,7 +88,7 @@ $ npm install --save-dev babel-plugin-transform-es2015-modules-simple-commonjs
 
 ### Via Node API
 
-```javascript
+```js
 require('babel').transform('code', {
   plugins: ['transform-es2015-modules-simple-commonjs']
 });
