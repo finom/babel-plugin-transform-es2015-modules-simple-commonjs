@@ -4,6 +4,7 @@ import c from '/path/to/c';
 import '/path/to/d';
 import {e, f as g, h, i as j} from '/path/to/e';
 import {k} from '/path/to/k';
+import * as l from "/path/to/l";
 doSomething();
 export default x + y;
 doSomethingElse();

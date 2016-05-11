@@ -31,24 +31,31 @@ function runTest(dir) {
 	var expected = fs.readFileSync(dir.path + '/expected.js', 'utf-8');
 
 	function normalizeLines(str) {
-		return str.trimRight().replace(/\r\n/g, '\n');
+		return str.replace(/\r\n/g, '\n').trimRight();
 	}
 
-	process.stdout.write(chalk.bgWhite.black(dir.name));
-	process.stdout.write('\n\n');
+	var normalizedOutput = normalizeLines(output.code);
+	var normalizedExpected = normalizeLines(expected);
 
-	diff.diffLines(normalizeLines(output.code), normalizeLines(expected))
-	.forEach(function (part) {
-		var value = part.value;
-		if (part.added) {
-			value = chalk.green(part.value.replace(/\t/g, '»   '));
-		} else if (part.removed) {
-			value = chalk.red(part.value.replace(/\t/g, '»   '));
-		}
+	if (normalizedOutput === normalizedExpected) {
+		process.stdout.write(chalk.bgWhite.black(dir.name) + ' ' + chalk.green('OK'));
+	} else {
+		process.stdout.write(chalk.bgWhite.black(dir.name) + ' ' + chalk.red('Different'));
+		process.stdout.write('\n\n');
+
+		diff.diffLines(normalizedOutput, normalizedExpected)
+		.forEach(function (part) {
+			var value = part.value.replace(/\t/g, '»   ').replace(/^\n$/, '↵\n');
+			if (part.added) {
+				value = chalk.green(value);
+			} else if (part.removed) {
+				value = chalk.red(value);
+			}
 
 
-		process.stdout.write(value);
-	});
+			process.stdout.write(value);
+		});
+	}
 
 	process.stdout.write('\n\n\n');
 }
