@@ -40,7 +40,7 @@ exports.default = _x2.default + _y2.default;
 
 This supports all standard es2015 import and export code with some caveats.
 
-## caveats
+## Caveats
 
 1. When exporting the final value is used, not the value when writing an export statement. It is not supported to mutate declarations that have been exported. You will not be warned, it will just not work.
 
@@ -97,7 +97,3 @@ require('babel').transform('code', {
 ### Usage with other ES2015 plugins
 
 This replaces the functionality in `transform-es2015-mmodules-commonjs`, but you may be better off using this with the `babel-preset-es2015-webpack` preset, which takes the es2015 preset and removes the commonjs transform.
-
-[The same thing for AMD](https://github.com/finom/babel-plugin-transform-es2015-modules-simple-amd).
-
-Thanks to [RReverser](https://github.com/RReverser/babel-plugin-hello-world).
