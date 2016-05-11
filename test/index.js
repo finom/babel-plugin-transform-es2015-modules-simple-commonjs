@@ -45,12 +45,11 @@ function runTest(dir) {
 
 		diff.diffLines(normalizedOutput, normalizedExpected)
 		.forEach(function (part) {
-			var value = part.value;
-			value.replace(' ', '.');
+			var value = part.value.replace(/\t/g, '»   ').replace(/^\n$/, '↵\n');
 			if (part.added) {
-				value = chalk.green(part.value.replace(/\t/g, '»   '));
+				value = chalk.green(value);
 			} else if (part.removed) {
-				value = chalk.red(part.value.replace(/\t/g, '»   '));
+				value = chalk.red(value);
 			}
 
 
