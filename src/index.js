@@ -17,6 +17,14 @@ let buildNamedExportsAssignment = template(`
 	exports.$0 = $1;
 `);
 
+let buildExportAll = template(`
+	for(var $1 in $0) {
+		if ($1 !== "default") {
+			exports[$1] = $0[$1];
+		}
+	}
+`);
+
 module.exports = function({
 	types: t
 }) {
@@ -38,6 +46,18 @@ module.exports = function({
 					scope.rename("require");
 
 					let body = path.get("body");
+
+					function addSource(path) {
+						let importedID = path.scope.generateUidIdentifier(path.node.source.value);
+
+						sources.push(t.variableDeclaration("var", [
+							t.variableDeclarator(importedID, buildRequire(
+								path.node.source
+							).expression)
+						]));
+
+						return importedID;
+					}
 
 					for (let path of body) {
 						if (path.isExportDefaultDeclaration()) {
@@ -72,13 +92,7 @@ module.exports = function({
 									).expression)
 								]));
 							} else {
-								let importedID = path.scope.generateUidIdentifier(path.node.source.value);
-
-								sources.push(t.variableDeclaration("var", [
-									t.variableDeclarator(importedID, buildRequire(
-										path.node.source
-									).expression)
-								]));
+								let importedID = addSource(path);
 
 								specifiers.forEach(({imported, local}) => {
 									if (!imported || (!is2015Compatible && imported.name === 'default')) {
@@ -96,11 +110,14 @@ module.exports = function({
 							path.remove();
 							continue;
 						}
+
 						if (path.isExportNamedDeclaration()) {
-							hasNamedExports = true;
 							lastExportPath = path;
 							let declaration = path.get("declaration");
+
+							// if we are exporting a class/function/variable
 							if (declaration.node) {
+								hasNamedExports = true;
 								if (declaration.isFunctionDeclaration()) {
 									let id = declaration.node.id;
 									path.replaceWithMultiple([
@@ -132,21 +149,54 @@ module.exports = function({
 								continue;
 							}
 
+							// if we are exporting already instantiated variables
 							let specifiers = path.get("specifiers");
 							if (specifiers.length) {
-							  let nodes = [];
+								let nodes = [];
+								let source = path.node.source;
+								let importedID;
+								if (source) {
+									// export a from 'b';
+									// 'b' is the source
+									importedID = addSource(path);
+								}
+
 								for (let specifier of specifiers) {
 									if (specifier.isExportSpecifier()) {
+										let local = specifier.node.local;
+
+										// if exporting from we need to modify the local lookup
+										if (importedID) {
+											if (local.name === 'default') {
+												local = importedID;
+											} else {
+												local = t.memberExpression(importedID, local);
+											}
+										}
+
+										// if exporting to default, its module.exports
 										if (specifier.node.exported.name === 'default') {
-											nodes.push(buildExportsAssignment(specifier.node.local));
+											hasDefaultExport = true;
+											nodes.push(buildExportsAssignment(local));
 										} else {
-											nodes.push(buildNamedExportsAssignment(specifier.node.exported, specifier.node.local));
+											hasNamedExports = true;
+											nodes.push(buildNamedExportsAssignment(specifier.node.exported, local));
 										}
 									}
 								}
+
 								path.replaceWithMultiple(nodes);
 							}
+							continue;
 						}
+
+						if (path.isExportAllDeclaration()) {
+						   // export * from 'a';
+						   let importedID = addSource(path);
+						   let keyName = path.scope.generateUidIdentifier(importedID.name + "_key")
+
+						   path.replaceWithMultiple(buildExportAll(importedID, keyName));
+					   }
 					}
 
 					if (hasNamedExports && hasDefaultExport) {
