@@ -20,7 +20,7 @@
     "babel-register": "^6.3.13",
     "chalk": "^1.1.0",
     "clear": "0.0.1",
-    "diff": "^1.4.0",
+    "diff": "^4.0.1",
     "watch": "^0.16.0"
   },
   "scripts": {
