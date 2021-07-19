@@ -1,1 +1,1 @@
-export function module() {};
+export function module() {}

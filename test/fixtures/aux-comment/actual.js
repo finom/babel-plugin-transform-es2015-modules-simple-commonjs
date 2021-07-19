@@ -7,7 +7,8 @@ import {bar} from "foo4";
 import {foo as bar2} from "foo5";
 /* comment 1*/
 export {test};
-export var test = 5;
+var test = 5;
+export var test2 = 42;
 
 bar(foo, bar2);
 

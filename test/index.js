@@ -1,12 +1,10 @@
 var assert = require('assert');
-var babel = require('babel-core');
+var babel = require('@babel/core');
 var chalk = require('chalk');
 var clear = require('clear');
 var diff = require('diff');
 var fs = require('fs');
 var path = require('path');
-
-require('babel-register');
 
 var pluginPath = require.resolve('../src');
 
@@ -25,6 +23,7 @@ function runTests() {
 
 function runTest(dir) {
 	var output = babel.transformFileSync(dir.path + '/actual.js', {
+    babelrc: false,
 		plugins: [pluginPath]
 	});
 

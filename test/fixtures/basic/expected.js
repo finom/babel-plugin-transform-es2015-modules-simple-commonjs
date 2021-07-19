@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var a = require('/path/to/a');
 
@@ -25,5 +25,4 @@ require('/path/to/d');
 
 doSomething();
 module.exports = x + y;
-
 doSomethingElse();
