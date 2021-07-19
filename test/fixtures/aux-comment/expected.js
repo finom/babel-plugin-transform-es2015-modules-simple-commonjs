@@ -22,10 +22,10 @@ require("./directory/foo-bar");
 
 /* comment 1*/
 exports.test = test;
-var test = exports.test = 5;
-
+var test = 5;
+var test2 = exports.test2 = 42;
 bar(foo, bar2);
-
 /* my comment */
+
 bar2;
 foo;

@@ -1,4 +1,5 @@
 "use strict";
 
-function _module() {}exports.module = _module;
-;
+function _module() {}
+
+exports.module = _module;
