@@ -5,37 +5,44 @@ Simple transformer for ECMAScript 2015 modules (CommonJS).
 Converts this code:
 ```js
 import x from '/path/to/x';
-import y from '/path/to/y';
+import * as y from '/path/to/y';
 doSomething();
-export default x + y;
+export default x + y.z;
 ```
 
 Into this one:
 ```js
 var x = require('/path/to/x');
-var y = require('/path/to/y');
+var _pathToY = require('/path/to/y');
+var y = _pathToY;
 doSomething();
-module.exports = x + y;
+module.exports = x + y.z;
 ```
 
 Instead of this one (generated with ``babel-plugin-transform-es2015-modules-commonjs``):
 ```js
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _x = require('/path/to/x');
+var _x = _interopRequireDefault(require("/path/to/x"));
 
-var _x2 = _interopRequireDefault(_x);
+var y = _interopRequireWildcard(require("/path/to/y"));
 
-var _y = require('/path/to/y');
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
-var _y2 = _interopRequireDefault(_y);
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 doSomething();
-exports.default = _x2.default + _y2.default;
+
+var _default = _x.default + y.z;
+
+exports.default = _default;
 ```
 
 This supports all standard es2015 import and export code with some caveats.
